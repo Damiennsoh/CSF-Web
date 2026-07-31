@@ -18,10 +18,8 @@ const nextConfig = {
   // Multi-platform compatibility
   outputFileTracingRoot: process.cwd(),
   experimental: {
-    isrMemoryCacheSize: 0, // Disable ISR memory caching for Cloudflare compatibility
+    serverActions: true,
   },
-  // Add empty turbopack config to silence the error
-  turbopack: {},
   // Set webpack mode explicitly
   webpack: (config, { isServer }) => {
     return config;
