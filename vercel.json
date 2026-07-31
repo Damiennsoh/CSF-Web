@@ -64,14 +64,5 @@
       "destination": "/api/$1"
     }
   ],
-  "redirects": [],
-  "env": [
-    "NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME",
-    "NEXT_PUBLIC_CLOUDINARY_API_KEY",
-    "NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET",
-    "NEXT_PUBLIC_GEMINI_API_KEY",
-    "CLOUDINARY_CLOUD_NAME",
-    "CLOUDINARY_API_KEY",
-    "CLOUDINARY_API_SECRET"
-  ]
+  "redirects": []
 }
