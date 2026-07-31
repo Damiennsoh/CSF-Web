@@ -1,0 +1,3 @@
+-- Archived: debug-admin-status.sql
+-- Moved to scripts/archive on 2026-03-04
+-- Original SQL content preserved in VCS history.

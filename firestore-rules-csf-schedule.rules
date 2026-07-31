@@ -1,0 +1,53 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // CSF Schedules collection - the actual collection used by the app
+    match /csf_schedules/{document} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && 
+        request.auth.token.admin == true;
+      allow delete: if request.auth != null && 
+        request.auth.token.admin == true;
+    }
+    
+    // Live schedules collection - read access for all authenticated users, write access for admins
+    match /live_schedules/{document} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && 
+        request.auth.token.admin == true;
+      allow delete: if request.auth != null && 
+        request.auth.token.admin == true;
+    }
+    
+    // Schedule history collection - read access for all authenticated users, write access for admins
+    match /schedule_history/{document} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null && 
+        request.auth.token.admin == true;
+      allow update: if request.auth != null && 
+        request.auth.token.admin == true;
+      allow delete: if request.auth != null && 
+        request.auth.token.admin == true;
+    }
+    
+    // Schedule drafts collection - admin only access
+    match /schedule_drafts/{document} {
+      allow read, write, delete: if request.auth != null && 
+        request.auth.token.admin == true;
+    }
+    
+    // Fellowship settings collection - admin only access
+    match /fellowship_settings/{document} {
+      allow read: if request.auth != null;
+      allow write, delete: if request.auth != null && 
+        request.auth.token.admin == true;
+    }
+    
+    // Member management collection - read access for all authenticated users, write access for admins
+    match /members/{document} {
+      allow read: if request.auth != null;
+      allow create, update, delete: if request.auth != null && 
+        request.auth.token.admin == true;
+    }
+  }
+}

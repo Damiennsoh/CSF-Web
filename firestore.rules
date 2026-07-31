@@ -1,0 +1,210 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper functions
+    function isSignedIn() { return request.auth != null; }
+    function isAdmin() {
+      return isSignedIn() && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+    }
+    function isOwner(userId) { return isSignedIn() && request.auth.uid == userId; }
+
+    // ============================================
+    // 1. USER MANAGEMENT - Admin Only
+    // ====================a========================
+    match /users/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      allow create: if isOwner(userId);
+      allow update: if isAdmin() || (isOwner(userId) && !('isAdmin' in request.resource.data.keys()));
+      allow delete: if isAdmin();
+    }
+
+    // ============================================
+    // 2. MINISTRIES - Admin Only Write
+    // ============================================
+    match /ministries/{ministryId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+      
+      // Subcollections - Admin Only
+      match /roles/{roleId} {
+        allow read: if true;
+        allow create, update, delete: if isAdmin();
+      }
+      match /members/{memberId} {
+        allow read: if true;
+        allow create, update, delete: if isAdmin();
+      }
+      match /schedule/{scheduleId} {
+        allow read: if true;
+        allow create, update, delete: if isAdmin();
+      }
+      match /activities/{activityId} {
+        allow read: if true;
+        allow create, update, delete: if isAdmin();
+      }
+      match /resources/{resourceId} {
+        allow read: if true;
+        allow create, update, delete: if isAdmin();
+      }
+    }
+
+    // ============================================
+    // 3. EVENTS - Admin Only Write
+    // ============================================
+    match /events/{eventId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    // ============================================
+    // 4. ALUMNI - Admin Only Write
+    // ============================================
+    match /alumni/{alumniId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    // ============================================
+    // 5. RESOURCES - Admin Only Write
+    // ============================================
+    match /spiritual_resources/{resourceId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+    
+    match /resources/{resourceId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    // ============================================
+    // 6. GALLERY - Admin Only Write
+    // ============================================
+    match /gallery/{galleryId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    // ============================================
+    // 7. TESTIMONIALS - Admin Only Write
+    // ============================================
+    match /testimonials/{testimonialId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    // ============================================
+    // 8. LEADERSHIP - Admin Only Write
+    // ============================================
+    match /executive_leaders/{leaderId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    // ============================================
+    // 9. EXECUTIVE TENURES - Admin Only Write
+    // ============================================
+    match /executive_tenures/{tenureId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    // ============================================
+    // 10. ABOUT LEADERSHIP - Admin Only Write
+    // ============================================
+    match /about_leadership/{leaderId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    // ============================================
+    // 11. ABOUT CONTENT - Admin Only Write
+    // ============================================
+    match /about_content/{contentId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    // ============================================
+    // 9. MINISTRY ROLES - Admin Only Write
+    // ============================================
+    match /ministry_roles/{roleId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    // ============================================
+    // 10. PRAYER REQUESTS - Admin Only Write
+    // ============================================
+    match /prayer_requests/{requestId} {
+      allow read: if isAdmin();
+      allow create: if true; // Public can submit
+      allow update, delete: if isAdmin();
+    }
+
+    // ============================================
+    // 11. DONATIONS - Admin Only Write
+    // ============================================
+    match /donations/{donationId} {
+      allow read: if isAdmin();
+      allow create: if true; // Public can donate
+      allow update, delete: if isAdmin();
+    }
+    
+    match /donation_campaigns/{campaignId} {
+      allow read: if isAdmin();
+      allow create, update, delete: if isAdmin();
+    }
+    
+    match /donation_categories/{categoryId} {
+      allow read: if isAdmin();
+      allow create, update, delete: if isAdmin();
+    }
+
+    // ============================================
+    // 12. CONTACT MESSAGES - Admin Only Write
+    // ============================================
+    match /contact_messages/{messageId} {
+      allow read: if isAdmin();
+      allow create: if true; // Public can submit
+      allow update, delete: if isAdmin();
+    }
+
+    // ============================================
+    // 13. AUDIT LOGS - Admin Only
+    // ============================================
+    match /admin_audit_logs/{logId} {
+      allow read: if isAdmin();
+      allow create: if isAdmin();
+      allow update, delete: if false; // Never allow update/delete of audit logs
+    }
+
+    // ============================================
+    // 14. MINISTRY RESOURCES (legacy) - Admin Only Write
+    // ============================================
+    match /ministry_resources/{resourceId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    // ============================================
+    // 15. SCHEDULES - Public Read, Admin Write
+    // ============================================
+    match /csf_schedules/{scheduleId} {
+      // ANYONE (logged in or not) can read the schedule
+      allow read: if true;
+      
+      // ONLY Admins can write/update the schedule
+      allow write: if isAdmin();
+    }
+
+    // ============================================
+    // 16. LEADERS (legacy) - Admin Only Write
+    // ============================================
+    match /leaders/{leaderId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+  }
+}

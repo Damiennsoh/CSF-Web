@@ -1,0 +1,19 @@
+[
+  {
+    "origin": [
+      "http://localhost:3000",
+      "https://csf-website-ba751.web.app",
+      "https://csf-website-ba751.firebaseapp.com"
+    ],
+    "method": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    "responseHeader": [
+      "Content-Type",
+      "Access-Control-Allow-Origin",
+      "Authorization",
+      "X-Requested-With",
+      "X-Upload-Content-Type",
+      "X-Upload-Content-Length"
+    ],
+    "maxAgeSeconds": 3600
+  }
+]
